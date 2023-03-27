@@ -1,4 +1,3 @@
-# minishell
 # 42minishell
 
 Welcome from 1337 FUTURE IS LOADING
