@@ -3,13 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strjoin.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yrimah <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: aelidrys <aelidrys@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/08 12:42:41 by yrimah            #+#    #+#             */
-/*   Updated: 2023/01/08 12:42:44 by yrimah           ###   ########.fr       */
+/*   Updated: 2023/05/12 14:56:32 by aelidrys         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "libft.h"
+
+#include "../minishell.h"
 
 char	*ft_strjoin(char const *s1, char const *s2)
 {

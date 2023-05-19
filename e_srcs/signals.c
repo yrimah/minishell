@@ -1,24 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putstr_fd.c                                     :+:      :+:    :+:   */
+/*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aelidrys <aelidrys@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/08 12:42:01 by yrimah            #+#    #+#             */
-/*   Updated: 2023/05/11 16:32:08 by aelidrys         ###   ########.fr       */
+/*   Created: 2023/03/21 07:49:23 by aelidrys          #+#    #+#             */
+/*   Updated: 2023/05/19 11:43:24 by aelidrys         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	ft_putstr_fd(char *s, int fd)
+void	sigint_hand(int sig)
 {
-	int	i;
-
-	if (!s)
+	sig = 0;
+	if (shell->flag)
 		return ;
-	i = -1;
-	while (s[++i])
-		ft_putchar_fd(s[i], fd);
+	write(1, "\n", 1);
+	rl_on_new_line();
+	// rl_replace_line("", 0);
+	rl_redisplay();
+	shell->g_status = 1;
+}
+
+void	setup_term(void)
+{
+	struct termios	t;
+
+	tcgetattr(STDIN_FILENO, &t);
+	t.c_lflag &= ~ECHOCTL;
+	tcsetattr(STDIN_FILENO, TCSANOW, &t);
 }

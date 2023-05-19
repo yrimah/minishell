@@ -21,26 +21,26 @@ SRCS		=	ft_isalpha.c	ft_isdigit.c		ft_isalnum.c	\
 				ft_printstr.c	ft_printnbr.c		ft_printhex.c	\
 				ft_printptr.c	ft_printunbr.c		ft_parse.c
 
-OBJS		=	$(SRCS:.c=.o)
+OBJS	=	$(SRCS:.c=.o)
 
-CFLAGS		=	-Wall -Wextra -Werror
-CC			=	cc
-RM			=	rm -rf
+CFLAGS	=	-Wall -Wextra -Werror
+CC		=	cc
+RM		=	rm -rf
 
-.c.o		:
-				$(CC) $(CFLAGS) -c $< -o $(<:.c=.o)
+.c.o:
+	@$(CC) $(CFLAGS) -c $< -o $(<:.c=.o)
 
-all			:	$(NAME)
+all : $(NAME)
 
-$(NAME)		:	$(OBJS)
-				ar rcs $(NAME) $(OBJS)
+$(NAME) : $(OBJS)
+	@ar rcs $(NAME) $(OBJS)
 
-clean		:
-				$(RM) $(OBJS)
+clean :
+	@$(RM) $(OBJS)
 
-fclean		:	clean
-				$(RM) $(NAME)
+fclean : clean
+	@$(RM) $(NAME)
 
-re			:	fclean all
+re : fclean all
 
-.PHONY		:	all clean fclean re
+.PHONY : all clean fclean re

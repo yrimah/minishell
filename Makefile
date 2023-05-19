@@ -1,43 +1,42 @@
-NAME		:= minishell
+NAME = minishell
 
-CC			:= cc
-FLAGS		:= -Wall -Wextra -Werror
-RD_FLAGS	:= -lreadline
+E_OBJ = e_srcs/main.o e_srcs/command.o  e_srcs/builtines.o e_srcs/toulse1.o\
+e_srcs/unset.o e_srcs/cd.o e_srcs/echo.o  e_srcs/exit.o  e_srcs/split.o\
+e_srcs/get_path.o e_srcs/environment.o e_srcs/export.o e_srcs/errors.o\
+e_srcs/multible_cmd.o e_srcs/signals.o e_srcs/string_action.o
 
-EXE			:= ./minishell
-DIR_SRCS	:=	srcs
-DIR_INCS	:=	includes
+P_OBJ = p_srcs/main.o p_srcs/split_space_quoted.o p_srcs/expander.o\
+p_srcs/handling.o p_srcs/ft_dup_envp.o p_srcs/fill_nodes.o p_srcs/ft_last_split.o\
+p_srcs/help.o p_srcs/ft_split_command.o p_srcs/get_infile_outfile.o\
+p_srcs/heredoc_handle.o p_srcs/parsing.o
 
-LST_SRCS	:=	main.c split_space_quoted.c handling.c \
-				ft_dup_envp.c fill_nodes.c ft_last_split.c \
-				ft_split_command.c get_infile_outfile.c \
-				help.c parsing.c heredoc_handle.c expander.c
-LST_INCS	:= 	minishell.h
+CC = cc
+CFLAGS = -Wall -Wextra -Werror  #-fsanitize=address
+RD_FLAGS = -I ~/Users/yrimah/goinfre/homebrew/Cellar/readline/8.2.1/include  -L /Users/yrimah/goinfre/homebrew/Cellar/readline/8.2.1/lib -lreadline
 
-OBJS	:=	$(LST_SRCS:.c=.o)
 
-SRCS		:=	$(addprefix $(DIR_SRCS)/, $(LST_SRCS))
-INCS		:=	$(addprefix $(DIR_INCS)/, $(LST_INCS))
 
-%.o: $(DIR_SRCS)/%.c $(INCS)
-	$(CC) -I $(DIR_INCS) -c $< -o $@
+all : $(NAME)
 
-all:		$(NAME)
-
-$(NAME):	$(OBJS)
+$(NAME) : $(E_OBJ) $(P_OBJ)
 	make -C libft/
-	$(CC) $(OBJS) -L libft/ -lft -L /goinfre/yrimah/homebrew/opt/readline/lib -I /goinfre/yrimah/homebrew/opt/readline/include  $(RD_FLAGS) $(FLAGS) -o $@ && $(EXE)
+	$(CC) $(CFLAGS) -L libft/ -lft $(P_OBJ) $(E_OBJ) -o $(NAME) $(RD_FLAGS)
 
-# exec:
-# 	./minishell
+build : $(OBJ)
+	ar -rc lib.a $?
 
-clean:
-	rm -rf $(OBJS)
+clean :
+	rm -f $(E_OBJ)
+	rm -f $(P_OBJ)
+
+clean_all :
+	rm -f $(E_OBJ)
+	rm -f $(P_OBJ)
 	make clean -C libft/
 
-fclean:		clean
-	rm -rf $(NAME)
+fclean : clean
+	rm -f $(NAME)
 
-re:			fclean all
+re : fclean all
 
-.PHONY:		all clean fclean re
+.PHONY : clean
