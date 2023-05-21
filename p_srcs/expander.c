@@ -43,10 +43,28 @@ static char	*get_substr_var(char *str, int i, t_shell *prompt)
 	if (pos == -1)
 		pos = ft_strlen(str) - 1;
 	aux = ft_substr(str, 0, i - 1);
+	// int j = ft_strlen(&str[i]);
+	// while (str[j] == '\'' || str[j] == '"')
+	// 	j--;
+	// char *new = ft_substr(str, 0, j);
+	// printf("%s\n", new);
+	// printf("%d\n", j);
+	// while (str[i] == '\'' || str[i] == '"')
+	// 	i++;
 	if (a_get_env(shell->env, &str[i]))
+	// {
+	// 	// if (ft_strchars_i(&str[i], "\"\'$|>< ") <= 0)
 		var = ft_strdup(a_get_env(shell->env, &str[i])->val);
-	// var = mini_getenv(&str[i], prompt->envp, \
-	// 	ft_strchars_i(&str[i], "\"\'$|>< "));
+		// else
+		// {
+		// 	i = ft_strchars_i(&str[i], "\"\'$|>< ");
+		// 	var = ft_strdup(a_get_env(shell->env, &str[i + 2])->val);
+		// }
+	// }
+	// else
+		// var = mini_getenv(&str[i], prompt->envp, \
+		// 	ft_strchars_i(&str[i], "\"\'$|>< "));
+	// printf("%d", ft_strchars_i(&str[i], "\"\'$|>< "));
 	if (!var && str[i] == '$')
 		var = ft_itoa(prompt->id);
 	else if (!var && str[i] == '?')
@@ -100,17 +118,32 @@ char	*expand_vars(char *str, int i, int quotes[2], t_shell *prompt)
 {
     quotes[0] = 0;
     quotes[1] = 0;
+
     while (str && str[++i])
     {
         quotes[0] += (!quotes[1] && str[i] == '\'');
         quotes[1] += (!quotes[0] && str[i] == '\"');
-        if (quotes[0] % 2 == 0 && str[i] == '$' && str[i + 1])
+		// printf("%s\n", &str[i]);
+		// if (str_comp(&str[i - 2], "<<"))
+		// 	shell->in_heredoc = 1;
+		// if (str_comp(&str[i], "<<"))
+		// {
+		// 	// i += 2;
+		// 	shell->in_heredoc = 1;
+		// }
+		// printf("%d\n", shell->in_heredoc);
+        if (str[i] && quotes[0] % 2 == 0 && str[i] == '$' && str[i + 1])
         {
             if (!quotes[1] && ft_strchars_i("/~%^{}:; ", &str[i + 1]))
                 return (expand_vars(get_substr_var(str, ++i, prompt), -1, quotes, prompt));
             else if (quotes[1] && ft_strchars_i("/~%^{}:;\"", &str[i + 1]))
                 return (expand_vars(get_substr_var(str, ++i, prompt), -1, quotes, prompt));
         }
+		// else if (shell->in_heredoc == 1)
+		// {
+		// 	str = get_substr_var(str, i, prompt);
+		// 	printf("%s", str);
+		// }
     }
     return (str);
 }
@@ -171,7 +204,7 @@ char	*expand_vars(char *str, int i, int quotes[2], t_shell *prompt)
 
 
 
-char	*expand_path(char *str, int i, int quotes[2], char *var)
+char	*expand_path(char *str, int i, int quotes[2], char *var, t_shell *shell)
 {
 	char	*path;
 	char	*aux;
@@ -182,9 +215,14 @@ char	*expand_path(char *str, int i, int quotes[2], char *var)
 	{
 		quotes[0] = (quotes[0] + (!quotes[1] && str[i] == '\'')) % 2;
 		quotes[1] = (quotes[1] + (!quotes[0] && str[i] == '\"')) % 2;
+		if (shell->in_heredoc)
+		{
+			// i++;
+			shell->tilde = 1;
+		}
 		// if (!quotes[0] && !quotes[1] && str[i] == '~' && (i == 0 || \
 		// 	str[i - 1] != '$' || str[i - 1] == ' '))
-		if (!quotes[0] && !quotes[1] && str[i] == '~' && (i == 0 || str[i - 1] == ' ' || str[i - 1] == '$'))
+		if (!quotes[0] && !quotes[1] && str[i] == '~' && (i == 0 || str[i - 1] == ' ' || str[i - 1] == '$')  && shell->tilde == 0)
 		{
 			aux = ft_substr(str, 0, i);
 			path = ft_strjoin(aux, var);
@@ -194,8 +232,9 @@ char	*expand_path(char *str, int i, int quotes[2], char *var)
 			str = ft_strjoin(path, aux);
 			free(aux);
 			free(path);
-			return (expand_path(str, i + ft_strlen(var) - 1, quotes, var));
+			return (expand_path(str, i + ft_strlen(var) - 1, quotes, var, shell));
 		}
+		// shell->tilde = 0;
 	}
 	free(var);
 	return (str);

@@ -94,6 +94,8 @@ t_list	*fill_nodes(char **args, int i)
 	char	**temp[2];
 
 	cmds[0] = NULL;
+	// for (int b = 0; args[b]; b++)
+	// 	printf("%s\n", args[b]);
 	temp[1] = get_trimmed(args);
 	if (!open_here_doc(args, -1))
 	{

@@ -114,10 +114,22 @@ static char	**split_all(char **args, t_shell *prompt)
 	while (args && args[++i])
 	{
 		//var expander edit
-		args[i] = expand_vars(args[i], -1, quotes, prompt);
+		// if  (prompt->in_heredoc == 1)
+		// {
+		// 	prompt->in_heredoc = 0;
+		// 	prompt->tilde = 0;
+		// 	// i++;
+		// }
+		if (i <= 1 || (i > 1 && !str_comp(args[i - 1], "<") && !str_comp(args[i - 2], "<")))
+		{
+			// for (int a = 0 ; args[a]; a++)
+			// 	printf("args[%d] = %s\n",a ,args[a]);
+			// printf("--args[%d] = %s\n",i ,args[i]);
+			args[i] = expand_vars(args[i], -1, quotes, prompt);
+			args[i] = expand_path(args[i], -1, quotes, mini_getenv("HOME", prompt->envp, 4), prompt);
+		}
 		//path expander fixed space
-		args[i] = expand_path(args[i], -1, quotes, mini_getenv("HOME", prompt->envp, 4));
-		subsplit = ft_split_command(args[i], "|><");
+		subsplit = ft_split_command(args[i], "<|>");
 		ft_mat_rep_in(&args, subsplit, i);
 		i += ft_rows_number(subsplit) - 1;
 		ft_free_envp(&subsplit);

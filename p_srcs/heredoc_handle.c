@@ -62,14 +62,52 @@ int	open_here_doc(char **args, int a)
 {
 	t_herdoc *hdc;
 
-	a = -1;
+	// a = -1;
 	while (args[++a])
 	{
 		// printf("args[%d] = %s\n", a, args[a]);
+		// printf("args[%d] = %s\n", a +1, args[a + 1]);
+		// printf("args[%d] = %s\n", a + 2, args[a + 2]);
+		// printf("args[%d] = %s\n", a, args[a]);
+		// if (args[a + 3] && str_comp(args[a + 2], "<") && str_comp(args[a + 3], "<"))
+		// {
+		// 	error_handling(13, NULL);
+		// 	return (0);
+		// }
+		// else if (args[a + 2] && args[a + 3] && str_comp(args[a + 2], ">") && str_comp(args[a + 3], ">"))
+		// {
+		// 	error_handling(14, NULL);
+		// 	return (0);
+		// }
+		if (args[a + 1])
+		{
+			if ((args[a + 3] && args[a + 2] && str_comp(args[a + 2], "<") && str_comp(args[a + 3], "<"))  && !args[a + 4])
+			{
+				error_handling(13, NULL);
+				return (0);
+			}
+			else if ((args[a + 3] && args[a + 2] && str_comp(args[a + 2], ">") && str_comp(args[a + 3], ">")) && !args[a + 4])
+			{
+				error_handling(14, NULL);
+				return (0);
+			}
+		}
+
 		if (str_comp(args[a], "<") && str_comp(args[a + 1], "<"))
 		{
+			if (((str_comp(args[a + 2], "|") || (str_comp(args[a + 2], "<"))
+				|| (str_comp(args[a + 2], ">"))) && !args[a + 3]))
+			{
+				if (str_comp(args[a + 2], "|"))
+					error_handling(10, NULL);
+				else if (str_comp(args[a + 2], "<"))
+					error_handling(11, NULL);
+				else
+					error_handling(12, NULL);
+				return (0);
+			}
 			add_herdoc(&(shell->hdc), get_infile2(args, &a));
-			if (shell->g_status == 1)
+			if (shell->g_status == 1 || shell->g_status == 258)
 			{
 				while (shell->hdc)
 				{
@@ -98,6 +136,10 @@ int	get_here_doc(char *str[2], char *aux[2])
 	{
 		signal(SIGQUIT, SIG_IGN);
 		str[1] = get_here_str(str, 0, aux[0], aux[1]);
+		// if (str_comp(str[1], " ") || str_comp(str[1], "|"))
+		// {
+		// 	error_handling(10, NULL);
+		// }
 		write(fd[1], str[1], ft_strlen(str[1]));
 		if (shell->g_status == 130)
 		{

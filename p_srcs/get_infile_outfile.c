@@ -157,8 +157,8 @@ int	get_infile2(char **args, int *i)
 		*i = -1;
 		if (in != -1)
 		{
-			ft_putendl_fd("minishell: syntax error near unexpected token `newline'\n", 2);
-			shell->g_status = 2;
+			ft_putendl_fd("minishell: syntax error near unexpected token `newline'", 2);
+			shell->g_status = 258;
 		}
 	}
 	return (in);

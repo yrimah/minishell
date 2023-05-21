@@ -82,6 +82,7 @@ typedef struct s_shell
 	int				old_out;
 	int				old_in;
 	int				in_heredoc;
+	int				tilde;
 	pid_t			id;
 	pid_t			id1;
 	char			*heredoc_delim;
@@ -163,7 +164,7 @@ int		open_here_doc(char **args, int a);
 //signal
 // void	signal_handle(int signal);
 
-char	*expand_path(char *str, int i, int quotes[2], char *var);
+char	*expand_path(char *str, int i, int quotes[2], char *var, t_shell *shell);
 char	*expand_vars(char *str, int i, int quotes[2], t_shell *prompt);
 char	*mini_getenv(char *var, char **envp, int n);
 #endif

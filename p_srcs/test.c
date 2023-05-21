@@ -82,3 +82,32 @@ static char	**ft_fill_words(char **aux, char const *str,
 	aux[i[2]] = NULL;
 	return (aux);
 }
+
+
+static char	*get_substr_var(char *str, int i, t_shell *prompt)
+{
+	char	*aux;
+	int		pos;
+	char	*path;
+	char	*var = NULL;
+
+	pos = ft_strchars_i(&str[i], "|\"\'$?>< ") + (ft_strchr("$?", str[i]) != 0);
+	if (pos == -1)
+		pos = ft_strlen(str) - 1;
+	aux = ft_substr(str, 0, i - 1);
+	// if (a_get_env(shell->env, &str[i]))
+	// 	var = ft_strdup(a_get_env(shell->env, &str[i])->val);
+	var = mini_getenv(&str[i], shell->env, \
+			ft_strchars_i(&str[i], "\"\'$|>< "));
+	if (!var && str[i] == '$')
+		var = ft_itoa(prompt->id);
+	else if (!var && str[i] == '?')
+		var = ft_itoa(shell->g_status);
+	path = ft_strjoin(aux, var);
+	free(aux);
+	aux = ft_strjoin(path, &str[i + pos]);
+	free(var);
+	free(path);
+	free(str);
+	return (aux);
+}
