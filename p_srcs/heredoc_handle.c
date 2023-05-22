@@ -32,6 +32,7 @@ char	*get_here_str(char *str[2], size_t len, char *limit, char *warn)
 		free(temp);
 		len = ft_strlen(str[0]) - 1;
 	}
+	//
 	free(str[0]);
 	return (str[1]);
 }
@@ -84,11 +85,13 @@ int	open_here_doc(char **args, int a)
 			if ((args[a + 3] && args[a + 2] && str_comp(args[a + 2], "<") && str_comp(args[a + 3], "<"))  && !args[a + 4])
 			{
 				error_handling(13, NULL);
+				shell->g_status = 258;
 				return (0);
 			}
 			else if ((args[a + 3] && args[a + 2] && str_comp(args[a + 2], ">") && str_comp(args[a + 3], ">")) && !args[a + 4])
 			{
 				error_handling(14, NULL);
+				shell->g_status = 258;
 				return (0);
 			}
 		}
@@ -104,6 +107,7 @@ int	open_here_doc(char **args, int a)
 					error_handling(11, NULL);
 				else
 					error_handling(12, NULL);
+				shell->g_status = 258;
 				return (0);
 			}
 			add_herdoc(&(shell->hdc), get_infile2(args, &a));
@@ -136,10 +140,6 @@ int	get_here_doc(char *str[2], char *aux[2])
 	{
 		signal(SIGQUIT, SIG_IGN);
 		str[1] = get_here_str(str, 0, aux[0], aux[1]);
-		// if (str_comp(str[1], " ") || str_comp(str[1], "|"))
-		// {
-		// 	error_handling(10, NULL);
-		// }
 		write(fd[1], str[1], ft_strlen(str[1]));
 		if (shell->g_status == 130)
 		{

@@ -37,7 +37,7 @@ static t_cmd	*get_params(t_cmd *node, char **a[2], int *i)
 			node = get_outf2(node, a[1], i);
 		else if (a[0][*i][0] == '>')
 			node = get_outf1(node, a[1], i);
-		else if (a[0][*i][0] == '<' && a[0][*i + 1][0] == '<')
+		else if (a[0][*i][0] == '<' && a[0][*i + 1] && a[0][*i + 1][0] == '<')
 		{
 			tmp = shell->hdc;
 			node->in = shell->hdc->in;
@@ -77,7 +77,7 @@ static char	**get_trimmed(char **args)
 	}
 	return (temp);
 }
-
+///
 t_list	*stop_fill(t_list *cmds, char **args, char **temp)
 {
 	ft_lstclear(&cmds, free_nodes_content);
@@ -85,7 +85,7 @@ t_list	*stop_fill(t_list *cmds, char **args, char **temp)
 	ft_free_envp(&args);
 	return (NULL);
 }
-
+///
 
 
 t_list	*fill_nodes(char **args, int i)
@@ -94,8 +94,6 @@ t_list	*fill_nodes(char **args, int i)
 	char	**temp[2];
 
 	cmds[0] = NULL;
-	// for (int b = 0; args[b]; b++)
-	// 	printf("%s\n", args[b]);
 	temp[1] = get_trimmed(args);
 	if (!open_here_doc(args, -1))
 	{

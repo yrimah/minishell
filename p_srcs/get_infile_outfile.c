@@ -138,8 +138,10 @@ t_cmd	*get_inf2(t_cmd *node, char **args, int *i)
 int	get_infile2(char **args, int *i)
 {
 	int		in;
+	int		index;
 	char	*aux[2];
 	char	*str[2];
+	char	*tmp = NULL;
 
 	in = -2;
 	str[0] = NULL;
@@ -149,8 +151,42 @@ int	get_infile2(char **args, int *i)
 	(*i)++;
 	if (args[++(*i)])
 	{
+		// printf("%s\n", args[*i])
 		aux[0] = args[*i];
+		// printf("%s\n", aux[0]);
+		int begin = 0;
+		int end = 0;
+		index = 0;
+		// = ft_strlen(aux[0]);
+		// printf("%c\n", aux[0][end - 1]);
+		// end--;
+		// printf("%d -- %s\n", end, aux[0]);
+		while ((aux[0][begin] == '\'' || aux[0][begin] == '"'))
+		{
+			// printf("%cSS\n",aux[0][begin]);
+			begin++;
+			index = 1;
+		}
+		// printf("%d\n", begin);
+		end = begin;
+		while (aux[0][end] && (aux[0][end] != '\'' && aux[0][end] != '"'))
+		{
+			// printf("%s\n",aux[0]);
+			// printf("%c\n",aux[0][end]);
+			end++;
+		}
+		// printf("%c\n",aux[0][end]);
+		if (index)
+			end--;
+		// printf("%c\n", aux[0][end - 1]);
+		// if (ft_substr(aux[0], begin, end))
+		tmp = ft_substr(aux[0], begin, end);
+		aux[0] = ft_strdup(tmp);
+		// printf("%s\n", aux[0]);
 		in = get_here_doc(str, aux);
+		free(tmp);
+		free(aux[0]);
+		// printf("%s\n", aux[0]);
 	}
 	if (!args[*i] || in == -1)
 	{

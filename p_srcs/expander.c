@@ -32,6 +32,26 @@ char	*mini_getenv(char *var, char **envp, int n)
 	return (NULL);
 }
 
+static char *y_get_env(char *var, t_env *env, int n)
+{
+	int n2;
+
+	if (n < 0)
+		n = ft_strlen(var);
+	while (var && env)
+	{
+		n2 = n;
+		if (n2 < ft_strchars_i(env->key, "\"\'$|>< "))
+			n2 = ft_strchars_i(env->key, "\"\'$|>< ");
+		if (!ft_strncmp(env->key, var, n2) && !env->key[n2 + 1]) // try to change the condition to wwork : echo ''$USER''
+		{
+			return (ft_substr(env->val, 0, ft_strlen(env->val)));
+		}
+		env = env->next;
+	}
+	return (NULL);
+}
+
 static char	*get_substr_var(char *str, int i, t_shell *prompt)
 {
 	char	*aux;
@@ -43,6 +63,7 @@ static char	*get_substr_var(char *str, int i, t_shell *prompt)
 	if (pos == -1)
 		pos = ft_strlen(str) - 1;
 	aux = ft_substr(str, 0, i - 1);
+	// printf("%s\n", aux);
 	// int j = ft_strlen(&str[i]);
 	// while (str[j] == '\'' || str[j] == '"')
 	// 	j--;
@@ -51,19 +72,22 @@ static char	*get_substr_var(char *str, int i, t_shell *prompt)
 	// printf("%d\n", j);
 	// while (str[i] == '\'' || str[i] == '"')
 	// 	i++;
-	if (a_get_env(shell->env, &str[i]))
+	// // //printf("%s\n", &str[i]);
+	// if (a_get_env(shell->env, &str[i]))
+	// 	var = ft_strdup(a_get_env(shell->env, &str[i])->val);
 	// {
 	// 	// if (ft_strchars_i(&str[i], "\"\'$|>< ") <= 0)
-		var = ft_strdup(a_get_env(shell->env, &str[i])->val);
-		// else
+	// else if (str[ft_strchars_i(&str[i], "\"\'$|>< ")])
+	// 	var = ft_strdup(a_get_env(shell->env, &str[ft_strchars_i(&str[i], "\"\'$|>< ") - 2])->val);
 		// {
-		// 	i = ft_strchars_i(&str[i], "\"\'$|>< ");
+			// i = ft_strchars_i(&str[i], "\"\'$|>< ");
 		// 	var = ft_strdup(a_get_env(shell->env, &str[i + 2])->val);
 		// }
 	// }
+	// // //printf("%d\n", ft_strchars_i(&str[i], "\"\'$|>< "));
 	// else
-		// var = mini_getenv(&str[i], prompt->envp, \
-		// 	ft_strchars_i(&str[i], "\"\'$|>< "));
+	var = y_get_env(&str[i], shell->env, \
+		ft_strchars_i(&str[i], "\"\'$|>< "));
 	// printf("%d", ft_strchars_i(&str[i], "\"\'$|>< "));
 	if (!var && str[i] == '$')
 		var = ft_itoa(prompt->id);
