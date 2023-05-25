@@ -72,14 +72,10 @@ void	a_export(t_cmd *cmd, t_shell *shell)
 {
 	size_t	x;
 	size_t	y;
-	int		fd;
 	t_env	*env_x;
 
 	x = 1;
 	y = 0;
-	fd = cmd->out;
-	if (fd == -2)
-		fd = 1;
 	shell->g_status = 0;
 	while (cmd->cmmd[++y])
 	{
@@ -91,8 +87,8 @@ void	a_export(t_cmd *cmd, t_shell *shell)
 	{
 		env_x = get_env_x(shell->env, x++);
 		if (env_x && env_x->val)
-			a_printf("declare -x %s=\"%s\"\n", env_x->key, env_x->val, fd);
+			a_printf("declare -x %s=\"%s\"\n", env_x->key, env_x->val, cmd->out);
 		else if (env_x)
-			a_printf("declare -x %s\n", env_x->key, NULL, fd);
+			a_printf("declare -x %s\n", env_x->key, NULL, cmd->out);
 	}
 }

@@ -66,8 +66,9 @@ void	a_start(t_shell *shell, char **env1, int x)
 	shell->ex_st = 0;
 	shell->g_status = 0;
 	shell->old_pwd = NULL;
-	shell->in_heredoc = 0;
-	shell->tilde = 0;
+	// shell->in_heredoc = 0;
+	// shell->tilde = 0;
+	shell->quotes = NULL;
 	while (env1[++x])
 		add_back(&shell->env, new_env(env1[x], 1));
 	delete_env(shell, "OLDPWD", 0);

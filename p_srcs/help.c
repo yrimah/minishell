@@ -6,7 +6,7 @@
 /*   By: aelidrys <aelidrys@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/08 10:16:16 by aelidrys          #+#    #+#             */
-/*   Updated: 2023/05/08 10:18:03 by aelidrys         ###   ########.fr       */
+/*   Updated: 2023/05/25 11:40:08 by yrimah           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,6 @@ int	ft_strchr_i(const char *s, int c)
 	return (-1);
 }
 
-
 char	**ft_mat_rep_in(char ***big, char **small, int n)
 {
 	char	**aux;
@@ -61,7 +60,8 @@ char	**ft_mat_rep_in(char ***big, char **small, int n)
 	i[2] = -1;
 	if (!big || !*big || n < 0 || n >= ft_rows_number(*big))
 		return (NULL);
-	aux = ft_calloc(ft_rows_number(*big) + ft_rows_number(small), sizeof(char *));
+	aux = ft_calloc(ft_rows_number(*big)
+			+ ft_rows_number(small), sizeof(char *));
 	while (aux && big[0][++i[0]])
 	{
 		if (i[0] != n)
@@ -76,7 +76,6 @@ char	**ft_mat_rep_in(char ***big, char **small, int n)
 	*big = aux;
 	return (*big);
 }
-
 
 char	**ft_ext_mat(char **in, char *newstr)
 {

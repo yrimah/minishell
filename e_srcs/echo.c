@@ -38,28 +38,29 @@ int	whit_newline(char **s)
 void	a_echo(t_cmd *cmd, char **s)
 {
 	size_t	x;
-	int		fd;
+	size_t	y;
 
-	fd = cmd->out;
-	if (fd == -2)
-		fd = 1;
+	// printf("%d\n", cmd->out);
 	x = whit_newline(s);
 	shell->g_status = 0;
 	if (x)
 	{
 		while (s[x])
 		{
-			a_printf("%s", s[x], NULL, fd);
+			// printf("%d\n", cmd->out);
+			y = 0;
 			if (s[x++ + 1])
-				a_printf("%s", " ", NULL, fd);
+				while (s[x][y])
+					write(cmd->out, &s[x][y++], 1);
 		}
+		// a_printf("%s", "\n", NULL, cmd->out);
 		return ;
 	}
 	while (s[x])
 	{
-		a_printf("%s", s[x], NULL, fd);
+		a_printf("%s", s[x], NULL, cmd->out);
 		if (s[x++ + 1])
-			a_printf("%s", " ", NULL, fd);
+			a_printf("%s", " ", NULL, cmd->out);
 	}
-	a_printf("%s", "\n", NULL, fd);
+	a_printf("%s", "\n", NULL, cmd->out);
 }

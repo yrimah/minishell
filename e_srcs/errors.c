@@ -51,7 +51,7 @@ int	check_key(t_shell *shell, char *key, char *cmd, int a)
 		free(s[0]);
 		free(s[1]);
 		free(s);
-		if ((a && (!key[x] || key[x] == '=' || (key[x] == '+'
+		if ((a && (!key[x] || (key[x] == '=' && x > 0) || (key[x] == '+'
 						&& key[x + 1] == '='))) || (!a && !key[x]))
 			return (1);
 	}

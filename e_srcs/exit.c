@@ -37,15 +37,10 @@ int	check_exit(t_cmd *cmd)
 
 void	a_exit(t_shell *shell, t_cmd *cmd)
 {
-	int	fd;
-
 	(void)shell;
-	fd = cmd->out;
-	if (fd == -2)
-		fd = 1;
 	if (!cmd || !cmd->cmmd)
 		return ;
-	a_printf("%s\n", "exit", NULL, fd);
+	a_printf("%s\n", "exit", NULL, cmd->out);
 	if (!check_exit(cmd))
 		exit(255);
 	if (cmd->cmmd[1] && cmd->cmmd[2])

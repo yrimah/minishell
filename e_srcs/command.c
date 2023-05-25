@@ -12,20 +12,6 @@
 
 #include "../minishell.h"
 
-void	killing(void)
-{
-	t_pid	*pid;
-
-	pid = shell->pid;
-	while (pid)
-	{
-		kill(pid->id, SIGKILL);
-		pid = pid->next;
-	}
-	stop_fill(shell->commands, NULL, NULL);
-}
-
-//  x = 0 here_doc  //
 //  x = 1 one command //
 //  x = 2 multible cmd //
 void	waiting(int x)
@@ -50,11 +36,6 @@ void	waiting(int x)
 			write(1, "Quit: 3\n", 8);
 		}
 	}
-	// if (!x && wait(&shell->ex_st) != -1 && WIFSIGNALED(shell->ex_st))
-	// {
-	// 	killing();
-	// 	shell->g_status = 1;
-	// }
 	shell->flag = 0;
 }
 

@@ -12,8 +12,6 @@
 
 #include "../minishell.h"
 
-// extern int	g_status;
-
 void	*error_handling(int error, char *param)
 {
 	if (error == 1)
