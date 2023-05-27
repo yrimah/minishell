@@ -69,11 +69,13 @@ static t_cmd	*check_redirect(t_cmd *node, char **a[2], int *i)
 		else
 		{
 			error_handling(10, NULL);
+			shell->g_status = 258;
 			*i = -2;
 		}
 		return (node);
 	}
 	error_handling(10, NULL);
+	shell->g_status = 258;
 	*i = -2;
 	return (node);
 }

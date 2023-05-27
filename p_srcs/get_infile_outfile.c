@@ -54,10 +54,10 @@ t_cmd	*get_out_redirect(t_cmd *node, char **args, int *i)
 		if (node->out != -1)
 		{
 			ft_putendl_fd(nl, 2);
-			shell->g_status = 2;
+			shell->g_status = 258;
 		}
 		else
-			shell->g_status = 1;
+			shell->g_status = 258;
 	}
 	return (node);
 }
