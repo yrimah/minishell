@@ -29,7 +29,7 @@ static t_cmd	*handle_redirection(t_cmd *node, char **a[2], int *i)
 		return (node);
 	}
 	else
-		node = get_outf2(node, a[1], i);
+		node = get_double_out_redirect(node, a[1], i);
 	return (node);
 }
 
@@ -59,11 +59,11 @@ static t_cmd	*check_redirect(t_cmd *node, char **a[2], int *i)
 		if (a[0][*i][0] == '>' && a[0][*i + 1] && a[0][*i + 1][0] == '>')
 			node = handle_redirection(node, a, i);
 		else if (a[0][*i][0] == '>')
-			node = get_outf1(node, a[1], i);
+			node = get_out_redirect(node, a[1], i);
 		else if (a[0][*i][0] == '<' && a[0][*i + 1] && a[0][*i + 1][0] == '<')
 			help_redirec(node, i);
 		else if (a[0][*i][0] == '<')
-			node = get_inf1(node, a[1], i);
+			node = get_in_redirect(node, a[1], i);
 		else if (a[0][*i][0] != '|')
 			node->cmmd = ft_ext_mat(node->cmmd, a[1][*i]);
 		else

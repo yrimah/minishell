@@ -15,11 +15,10 @@
 char	*get_here_str(char *str[2], size_t len, char *limit, char *warn)
 {
 	char	*temp;
-	t_shell	*sh;
 	int		quotes[2];
 
 	(void)warn;
-	while (shell->g_status != 130 && (!str[0] || ft_strncmp(str[0], limit, len) \
+	while (shell->g_status != 130 && (ft_strncmp(str[0], limit, len) \
 		|| ft_strlen(limit) != len))
 	{
 		temp = str[1];
@@ -29,9 +28,8 @@ char	*get_here_str(char *str[2], size_t len, char *limit, char *warn)
 		str[0] = readline("> ");
 		if (!str[0])
 			break ;
-		sh = NULL;
 		if (!shell->quotes->quote && !str_comp(limit, str[0]))
-			str[0] = expand_vars(str[0], -1, quotes, sh, 1);
+			str[0] = expand_vars(str[0], -1, quotes, 1);
 		temp = str[0];
 		str[0] = ft_strjoin(str[0], "\n");
 		free(temp);
@@ -115,7 +113,7 @@ int	open_here_doc(char **args, int a)
 		{
 			if (check_invalid_redirect(args, a))
 				return (0);
-			add_herdoc(&(shell->hdc), get_infile2(args, &a));
+			add_herdoc(&(shell->hdc), get_double_in_redirect(args, &a));
 			if (check_status())
 			{
 				clear_herdoc();

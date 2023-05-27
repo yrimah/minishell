@@ -6,31 +6,11 @@
 /*   By: aelidrys <aelidrys@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 17:44:29 by yrimah            #+#    #+#             */
-/*   Updated: 2023/05/25 17:13:07 by yrimah           ###   ########.fr       */
+/*   Updated: 2023/05/27 16:16:51 by yrimah           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-char	*mini_getenv(char *var, char **envp, int n)
-{
-	int	i;
-	int	n2;
-
-	i = 0;
-	if (n < 0)
-		n = ft_strlen(var);
-	while (!ft_strchr(var, '=') && envp && envp[i])
-	{
-		n2 = n;
-		if (n2 < ft_strchr_i(envp[i], '='))
-			n2 = ft_strchr_i(envp[i], '=');
-		if (!ft_strncmp(envp[i], var, n2))
-			return (ft_substr(envp[i], n2 + 1, ft_strlen(envp[i])));
-		i++;
-	}
-	return (NULL);
-}
 
 static char	*y_get_env(char *var, t_env *env, int n, int *index)
 {
@@ -58,13 +38,11 @@ static char	*y_get_env(char *var, t_env *env, int n, int *index)
 	return (NULL);
 }
 
-static char	*get_substr_var(char *str, int i, t_shell *prompt)
+static char	*get_substr_var(char *str, int i)
 {
 	char	*aux;
 	char	*path;
 	char	*var;
-	char	*mytmp1;
-	char	*mytmp2;
 	int		pos;
 	int		index;
 
@@ -75,80 +53,21 @@ static char	*get_substr_var(char *str, int i, t_shell *prompt)
 	aux = ft_substr(str, 0, i - 1);
 	index = 0;
 	var = y_get_env(&str[i], shell->env, \
-		ft_strchars_i(&str[i], "\"\'-+*.,:=~@#!<>$^&|{}][%/ "), &index);
+		ft_strchars_i(&str[i], "\"\'-+*.,:=~@#!<>$?^&|{}][%/ "), &index);
 	if (!var && str[i] == '$')
-		var = ft_itoa(prompt->id);
+		var = ft_itoa(shell->id);
 	else if (!var && str[i] == '?')
 		var = ft_itoa(shell->g_status);
 	else
-	{
-		mytmp1 = ft_substr(&str[i], index, ft_strlen(&str[i]) - 1);
-		mytmp2 = a_strjoin(var, mytmp1, 0, 0);
-		free(mytmp1);
-		free(var);
-		var = mytmp2;
-	}
+		var = after_env_var(str, &i, &index, var);
 	path = a_strjoin(aux, var, 0, 0);
 	free(aux);
 	aux = ft_strdup(path);
-	free(var);
-	free(path);
-	free(str);
+	help_free2(var, path, str);
 	return (aux);
 }
 
-// static char *get_var_value(char *str, int i, t_shell *prompt)
-// {
-//     char *var;
-//     int index;
-//
-//     var = NULL;
-//     index = 0;
-//     var = y_get_env(&str[i], shell->env, \
-//         ft_strchars_i(&str[i], "\"\'-+*.,=~@#!$^&|%/ "), &index);
-//     return var;
-// }
-// static char *handle_var_value(char *var, char *aux, char *str, char *path)
-// {
-//     char *mytmp1;
-//     char *mytmp2;
-    
-//     mytmp1 = ft_substr(&str[i], index, ft_strlen(&str[i]) - 1);
-//     mytmp2 = a_strjoin(var, mytmp1, 0, 0);
-//     free(mytmp1);
-//     free(var);
-//     var = mytmp2;
-//     if (!var && str[i] == '$')
-//         var = ft_itoa(prompt->id);
-//     else if (!var && str[i] == '?')
-//         var = ft_itoa(shell->g_status);
-//     path = a_strjoin(aux, var, 0, 0);
-//     free(aux);
-//     aux = ft_strdup(path);
-//     free(var);
-//     free(path);
-//     free(str);
-//     return aux;
-// }
-// static char *get_substr_var(char *str, int i, t_shell *prompt)
-// {
-//     char *aux;
-//     char *path;
-//     char *var;
-//     int pos;
-//     int index;
-    
-//     var = NULL;
-//     pos = ft_strchars_i(&str[i], "|\"\'$?>< ") + (ft_strchr("$?", str[i]) != 0);
-//     if (pos == -1)
-//         pos = ft_strlen(str) - 1;
-//     aux = ft_substr(str, 0, i - 1);
-//     index = 0;
-//     var = get_var_value(str, i, prompt);
-//     return handle_var_value(var, aux, str, path);
-// }
-
-char	*expand_vars(char *str, int i, int quotes[2], t_shell *prompt, int q)
+char	*expand_vars(char *str, int i, int quotes[2], int q)
 {
 	quotes[0] = 0;
 	quotes[1] = 0;
@@ -161,17 +80,17 @@ char	*expand_vars(char *str, int i, int quotes[2], t_shell *prompt, int q)
 		if (str[i] && quotes[0] % 2 == 0 && str[i] == '$' && str[i + 1])
 		{
 			if (!quotes[1] && ft_strchars_i("~%^{}:;<> ", &str[i + 1]))
-				return (expand_vars(get_substr_var(str, ++i, prompt),
-						-1, quotes, prompt, q));
+				return (expand_vars(get_substr_var(str, ++i),
+						-1, quotes, q));
 			else if (quotes[1] && ft_strchars_i("~%^{}:;<>\"", &str[i + 1]))
-				return (expand_vars(get_substr_var(str, ++i, prompt),
-						-1, quotes, prompt, q));
+				return (expand_vars(get_substr_var(str, ++i),
+						-1, quotes, q));
 		}
 	}
 	return (str);
 }
 
-char	*expand_path(char *str, int i, int quotes[2], char *var, t_shell *shell)
+char	*expand_path(char *str, int i, int quotes[2], char *var)
 {
 	char	*path;
 	char	*aux;
@@ -193,8 +112,7 @@ char	*expand_path(char *str, int i, int quotes[2], char *var, t_shell *shell)
 			str = ft_strjoin(path, aux);
 			free(aux);
 			free(path);
-			return (expand_path(str, i + ft_strlen(var) - 1,
-					quotes, var, shell));
+			return (expand_path(str, i + ft_strlen(var) - 1, quotes, var));
 		}
 	}
 	free(var);

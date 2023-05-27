@@ -93,7 +93,6 @@ typedef struct s_shell
 
 void	init_shell(t_shell *shell, char **argv, char **envp);
 void	rl_replace_line(const char *text, int clear_undo);
-// char	**ft_split_buff(char *str, char *charset);
 char	**ft_dup_envp(char **envp);
 char	**ft_split_space_quoted(char const *str, char *delim);
 
@@ -103,7 +102,7 @@ void	*error_handling(int error, char *param);
 //free nodes content if error
 void	free_nodes_content(void *content);
 
-// help.c
+// help 1
 int		ft_strchars_i(const char *str, char *set);
 int		ft_strchr_i(const char *s, int c);
 //last split
@@ -125,7 +124,7 @@ void	parsing(char **args, t_shell *sh);
 void	check(char **str, t_shell *sh);
 void	init_vars(t_shell *sh, char *str, char **argv);
 
-//help
+//help 2
 char	**ft_mat_rep_in(char ***big, char **small, int n);
 char	**ft_ext_mat(char **in, char *newstr);
 
@@ -133,11 +132,10 @@ char	**ft_ext_mat(char **in, char *newstr);
 char	*ft_last_split(char const *s1, int squote, int dquote);
 
 //get in-out file
-t_cmd	*get_outf1(t_cmd *node, char **args, int *i);
-t_cmd	*get_outf2(t_cmd *node, char **args, int *i);
-t_cmd	*get_inf1(t_cmd *node, char **args, int *i);
-t_cmd	*get_inf2(t_cmd *node, char **args, int *i);
-int		get_infile2(char **args, int *i);
+t_cmd	*get_out_redirect(t_cmd *node, char **args, int *i);
+t_cmd	*get_double_out_redirect(t_cmd *node, char **args, int *i);
+t_cmd	*get_in_redirect(t_cmd *node, char **args, int *i);
+int		get_double_in_redirect(char **args, int *i);
 
 //set-get env
 char	**mini_setenv(char *var, char *value, char **envp, int n);
@@ -145,16 +143,12 @@ char	*mini_getenv(char *var, char **envp, int n);
 
 //nodes fill
 t_list	*stop_fill(t_list *cmds, char **args, char **temp);
-int		check_double_append(char **a[2], int *i, t_cmd *node);
-int		check_single_append(char **a[2], int *i, t_cmd *node);
-int		check_double_input(char **a[2], int *i, t_cmd *node);
-int		check_single_input(char **a[2], int *i, t_cmd *node);
 void	help_free(char **args, char ***temp);
 int		help_fill1(char **args, char ***temp, t_list **cmds);
 void	help_fill2(t_list *cmds[2], int *i, char **args, char ***temp);
 t_list	*fill_nodes(char **args, int i);
 
-//heredoc
+//heredoc 1
 int		get_here_doc(char *str[2], char *aux[2]);
 void	add_herdoc(t_herdoc **lst, int in);
 int		open_here_doc(char **args, int a);
@@ -165,10 +159,17 @@ int		check_invalid_redirect(char **args, int a);
 int		check_status(void);
 void	clear_herdoc(void);
 
-//signal
-// void	signal_handle(int signal);
+//heredoc 2
+void	initialize_variables(int *in, char **str, char **aux);
+void	process_aux(char **args, int *i, char **aux);
+void	help_process_quotes(char ***aux, int *begin, int *end);
+void	process_quotes(int *begin, int *end, char **aux);
+void	validate_input(char **args, int *i, int *in);
 
-char	*expand_path(char *str, int i, int quotes[2], char *var, t_shell *shell);
-char	*expand_vars(char *str, int i, int quotes[2], t_shell *prompt, int q);
+//expander
+char	*expand_path(char *str, int i, int quotes[2], char *var);
+char	*expand_vars(char *str, int i, int quotes[2], int q);
+char	*after_env_var(char *str, int *i, int *index, char *var);
+void	help_free2(char *var, char *path, char *str);
 char	*mini_getenv(char *var, char **envp, int n);
 #endif
