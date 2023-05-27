@@ -6,13 +6,13 @@
 /*   By: aelidrys <aelidrys@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/26 07:47:02 by aelidrys          #+#    #+#             */
-/*   Updated: 2023/05/15 16:11:55 by aelidrys         ###   ########.fr       */
+/*   Updated: 2023/05/27 18:27:51 by aelidrys         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	ft_free(char **arry)
+void	*ft_free(char **arry)
 {
 	int	n;
 
@@ -20,6 +20,16 @@ void	ft_free(char **arry)
 	while (arry && arry[n])
 		free(arry[n++]);
 	free(arry);
+	return (NULL);
+}
+
+void	is_adiroctory(char *cmd)
+{
+	if (opendir(cmd))
+	{
+		a_printf("minishell: %s%s\n", cmd, ": is a directory", 2);
+		exit(126);
+	}
 }
 
 char	*get_pth(t_env *env, char **env_e, char *cmd, int n)
@@ -31,12 +41,8 @@ char	*get_pth(t_env *env, char **env_e, char *cmd, int n)
 	if (!env || !cmd)
 		return (0);
 	if (!access(cmd, X_OK))
-		execve(cmd, shell->cmd->cmmd, env_e);
-	if (opendir(cmd))
-	{
-		a_printf("minishell: %s%s\n", cmd, ": is a directory", 2);
-		exit(126);
-	}
+		execve(cmd, g_shell->cmd->cmmd, env_e);
+	is_adiroctory(cmd);
 	env1 = a_get_env(env, "PATH");
 	if (!env1)
 		return (NULL);

@@ -6,7 +6,7 @@
 /*   By: aelidrys <aelidrys@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 17:44:29 by yrimah            #+#    #+#             */
-/*   Updated: 2023/05/27 16:16:51 by yrimah           ###   ########.fr       */
+/*   Updated: 2023/05/27 18:27:51 by aelidrys         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,12 +52,12 @@ static char	*get_substr_var(char *str, int i)
 		pos = ft_strlen(str) - 1;
 	aux = ft_substr(str, 0, i - 1);
 	index = 0;
-	var = y_get_env(&str[i], shell->env, \
+	var = y_get_env(&str[i], g_shell->env, \
 		ft_strchars_i(&str[i], "\"\'-+*.,:=~@#!<>$?^&|{}][%/ "), &index);
 	if (!var && str[i] == '$')
-		var = ft_itoa(shell->id);
+		var = ft_itoa(g_shell->id);
 	else if (!var && str[i] == '?')
-		var = ft_itoa(shell->g_status);
+		var = ft_itoa(g_shell->g_status);
 	else
 		var = after_env_var(str, &i, &index, var);
 	path = a_strjoin(aux, var, 0, 0);

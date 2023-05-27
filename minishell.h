@@ -6,7 +6,7 @@
 /*   By: aelidrys <aelidrys@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/19 11:14:59 by aelidrys          #+#    #+#             */
-/*   Updated: 2023/05/17 09:45:04 by aelidrys         ###   ########.fr       */
+/*   Updated: 2023/05/27 18:36:19 by aelidrys         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 # include <signal.h>
 # include "includes/mshell.h"
 
-t_shell	*shell;
+t_shell	*g_shell;
 
 //                    #environment#                //
 
@@ -50,7 +50,7 @@ t_env	*get_min(t_env *env);
 
 // it creates a linked list of cmd //
 void	add_cmd(t_cmd **list, t_cmd *new_cmd);
-void	cmd_list(t_shell *shell);
+void	cmd_list(void);
 void	free_cmd(t_cmd *cmd);
 // it executes one command //
 void	one_cmd(t_shell *shell, t_cmd *cmd);
@@ -88,7 +88,7 @@ void	rl_replace_line(const char *str, int n);
 int		ft_comper(char *min_s, char *str);
 int		str_comp(char *s1, char *s2);
 size_t	list_size(void *lst, int s);
-void	minishell(t_shell *shell);
+void	minishell(void);
 int		str_to_int(char *s);
 size_t	a_strlen(char *s);
 // sgnals //
@@ -103,7 +103,7 @@ pid_t	ft_fork(t_shell *shell, int s);
 void	print_error1(char *s1, int x);
 char	**spl(char*s, char c, int n);
 void	check_error(int a, int b);
-void	ft_free(char **arry);
+void	*ft_free(char **arry);
 void	waiting(int x);
 
 #endif

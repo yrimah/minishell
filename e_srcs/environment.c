@@ -6,7 +6,7 @@
 /*   By: aelidrys <aelidrys@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/10 09:13:40 by aelidrys          #+#    #+#             */
-/*   Updated: 2023/05/08 11:18:05 by aelidrys         ###   ########.fr       */
+/*   Updated: 2023/05/27 18:27:51 by aelidrys         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,12 +58,12 @@ void	add_env(t_shell *shell, char *str)
 	t_env	*env1;
 	char	**spl;
 
-	shell->y = 0;
+	g_shell->y = 0;
 	spl = get_key_and_val(shell, str, NULL, 0);
-	env1 = a_get_env(shell->env, spl[0]);
+	env1 = a_get_env(g_shell->env, spl[0]);
 	if (env1 && spl && spl[1])
 	{
-		if (shell->y == 1)
+		if (g_shell->y == 1)
 			env1->val = a_strjoin(env1->val, spl[1], 1, 0);
 		else
 		{
@@ -73,11 +73,11 @@ void	add_env(t_shell *shell, char *str)
 		env1->a = 1;
 	}
 	if (!env1)
-		add_back(&shell->env, new_env(str, 1));
+		add_back(&g_shell->env, new_env(str, 1));
 	free(spl[0]);
 	free(spl[1]);
 	free(spl);
-	sort_env(shell->env);
+	sort_env(g_shell->env);
 }
 
 t_env	*a_get_env(t_env *env, char *key)

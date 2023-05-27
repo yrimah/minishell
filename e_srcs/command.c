@@ -6,39 +6,39 @@
 /*   By: aelidrys <aelidrys@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/11 15:49:32 by aelidrys          #+#    #+#             */
-/*   Updated: 2023/05/19 18:05:25 by aelidrys         ###   ########.fr       */
+/*   Updated: 2023/05/27 18:35:40 by aelidrys         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
+//  x = 0 here_doc  //
 //  x = 1 one command //
 //  x = 2 multible cmd //
 void	waiting(int x)
 {
 	if (x == 2)
 	{
-		waitpid(shell->id1 ,&shell->ex_st, 0);
+		waitpid(g_shell->id1, &g_shell->ex_st, 0);
 		while (wait(NULL) != -1)
 			;
 	}
-	while (x == 1 && wait(&shell->ex_st) != -1)
+	while (x == 1 && wait(&g_shell->ex_st) != -1)
 		;
-	if (WIFEXITED(shell->ex_st))
-		shell->g_status = WEXITSTATUS(shell->ex_st);
-	if (x && WIFSIGNALED(shell->ex_st))
+	if (WIFEXITED(g_shell->ex_st))
+		g_shell->g_status = WEXITSTATUS(g_shell->ex_st);
+	if (x && WIFSIGNALED(g_shell->ex_st))
 	{
-		if (WTERMSIG(shell->ex_st) == 2)
-			shell->g_status = 130;
-		if (WTERMSIG(shell->ex_st) == 3)
+		if (WTERMSIG(g_shell->ex_st) == 2)
+			g_shell->g_status = 130;
+		if (WTERMSIG(g_shell->ex_st) == 3)
 		{
-			shell->g_status = 131;
+			g_shell->g_status = 131;
 			write(1, "Quit: 3\n", 8);
 		}
 	}
-	shell->flag = 0;
+	g_shell->flag = 0;
 }
-
 
 void	free_cmd(t_cmd *cmd)
 {
@@ -73,20 +73,20 @@ void	add_cmd(t_cmd **list, t_cmd *new_cmd)
 	}
 }
 
-void	cmd_list(t_shell *shell)
+void	cmd_list(void)
 {
 	t_list	*ptr;
 	t_list	*ptr1;
 
-	ptr = shell->commands;
+	ptr = g_shell->commands;
 	while (ptr)
 	{
-		add_cmd(&shell->cmd, (t_cmd *)ptr->content);
+		add_cmd(&g_shell->cmd, (t_cmd *)ptr->content);
 		ptr1 = ptr;
 		ptr = ptr->next;
 		free(ptr1);
 	}
-	shell->commands = NULL;
+	g_shell->commands = NULL;
 }
 
 void	one_cmd(t_shell *shell, t_cmd *cmd)
@@ -98,8 +98,8 @@ void	one_cmd(t_shell *shell, t_cmd *cmd)
 		return ;
 	if (!ft_fork(shell, 0))
 	{
-		env = convert_env(shell->env);
-		path = get_pth(shell->env, env, cmd->cmmd[0], -1);
+		env = convert_env(g_shell->env);
+		path = get_pth(g_shell->env, env, cmd->cmmd[0], -1);
 		if (!path)
 		{
 			a_printf("minishell: %s%s\n", cmd->cmmd[0],

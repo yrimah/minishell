@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_heredoc_help.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yrimah <marvin@42.fr>                      +#+  +:+       +#+        */
+/*   By: aelidrys <aelidrys@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/27 14:43:34 by yrimah            #+#    #+#             */
-/*   Updated: 2023/05/27 14:44:39 by yrimah           ###   ########.fr       */
+/*   Updated: 2023/05/27 18:27:51 by aelidrys         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,9 @@ void	process_aux(char **args, int *i, char **aux)
 	counter = 0;
 	aux[0] = args[*i];
 	if (aux[0][counter] == '\'' || aux[0][counter] == '"')
-		add_quotes(&(shell->quotes), 1);
+		add_quotes(&(g_shell->quotes), 1);
 	else
-		add_quotes(&(shell->quotes), 0);
+		add_quotes(&(g_shell->quotes), 0);
 }
 
 void	help_process_quotes(char ***aux, int *begin, int *end)
@@ -89,7 +89,7 @@ void	validate_input(char **args, int *i, int *in)
 		if (*in != -1)
 		{
 			ft_putendl_fd(error, 2);
-			shell->g_status = 258;
+			g_shell->g_status = 258;
 		}
 	}
 }

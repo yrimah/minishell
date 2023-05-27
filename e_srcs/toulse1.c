@@ -6,7 +6,7 @@
 /*   By: aelidrys <aelidrys@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/23 07:55:56 by aelidrys          #+#    #+#             */
-/*   Updated: 2023/05/12 20:27:39 by aelidrys         ###   ########.fr       */
+/*   Updated: 2023/05/27 18:27:51 by aelidrys         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ char	**get_key_and_val(t_shell *shell, char *s, char	**d, size_t	x)
 	x = 0;
 	while (s[x] && s[x] != '=')
 		if (s[x++] == '+' && shell)
-			shell->y = 1;
+			g_shell->y = 1;
 	d[0] = malloc(x + 1 * sizeof(char));
 	x = 0;
 	while (*s && *s != '=' && *s != '+')

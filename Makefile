@@ -12,7 +12,7 @@ p_srcs/heredoc_handle.o p_srcs/parsing.o p_srcs/set_vars.o p_srcs/heredoc_gest.o
 p_srcs/help_to_fill.o p_srcs/get_heredoc_help.o p_srcs/ft_add_quotes.o p_srcs/help_expand.o
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror #-fsanitize=address
+CFLAGS = -Wall -Wextra -Werror  #-fsanitize=address
 RD_FLAGS = -I ~/Users/yrimah/goinfre/homebrew/Cellar/readline/8.2.1/include  -L /Users/yrimah/goinfre/homebrew/Cellar/readline/8.2.1/lib -lreadline
 
 

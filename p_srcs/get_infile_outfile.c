@@ -6,7 +6,7 @@
 /*   By: aelidrys <aelidrys@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/08 10:16:01 by aelidrys          #+#    #+#             */
-/*   Updated: 2023/05/25 21:44:11 by yrimah           ###   ########.fr       */
+/*   Updated: 2023/05/27 18:27:51 by aelidrys         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,10 +54,10 @@ t_cmd	*get_out_redirect(t_cmd *node, char **args, int *i)
 		if (node->out != -1)
 		{
 			ft_putendl_fd(nl, 2);
-			shell->g_status = 258;
+			g_shell->g_status = 2;
 		}
 		else
-			shell->g_status = 258;
+			g_shell->g_status = 1;
 	}
 	return (node);
 }
@@ -79,10 +79,10 @@ t_cmd	*get_double_out_redirect(t_cmd *node, char **args, int *i)
 		if (node->out != -1)
 		{
 			ft_putendl_fd(error, 2);
-			shell->g_status = 258;
+			g_shell->g_status = 258;
 		}
 		else
-			shell->g_status = 258;
+			g_shell->g_status = 258;
 	}
 	return (node);
 }
@@ -104,10 +104,10 @@ t_cmd	*get_in_redirect(t_cmd *node, char **args, int *i)
 		if (node->in != -1)
 		{
 			ft_putendl_fd(error, 2);
-			shell->g_status = 258;
+			g_shell->g_status = 258;
 		}
 		else
-			shell->g_status = 258;
+			g_shell->g_status = 258;
 	}
 	return (node);
 }

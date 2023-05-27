@@ -6,7 +6,7 @@
 /*   By: aelidrys <aelidrys@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 07:49:23 by aelidrys          #+#    #+#             */
-/*   Updated: 2023/05/19 11:43:24 by aelidrys         ###   ########.fr       */
+/*   Updated: 2023/05/27 18:27:51 by aelidrys         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,13 @@
 void	sigint_hand(int sig)
 {
 	sig = 0;
-	if (shell->flag)
+	if (g_shell->flag)
 		return ;
 	write(1, "\n", 1);
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
-	shell->g_status = 1;
+	g_shell->g_status = 1;
 }
 
 void	setup_term(void)
