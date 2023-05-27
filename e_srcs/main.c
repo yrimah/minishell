@@ -60,6 +60,7 @@ void	a_start(t_shell *shell, char **env1, int x)
 	shell->old_in = dup(0);
 	shell->old_out = dup(1);
 	shell->env = NULL;
+	shell->hdc = NULL;
 	shell->cmd = NULL;
 	shell->pid = NULL;
 	shell->flag = 0;

@@ -6,7 +6,7 @@
 /*   By: aelidrys <aelidrys@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/08 10:16:01 by aelidrys          #+#    #+#             */
-/*   Updated: 2023/05/25 17:20:31 by yrimah           ###   ########.fr       */
+/*   Updated: 2023/05/25 21:44:11 by yrimah           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	get_fd(int oldfd, char *path, int flags[2])
 
 	if (oldfd > 2)
 		close(oldfd);
-	if (!path)
+	if (!path || oldfd == -1)
 		return (-1);
 	if (access(path, F_OK) == -1 && !flags[0])
 		error_handling(2, path);
@@ -134,84 +134,218 @@ void	add_quotes(t_quotes **lqts, int q)
 	}
 }
 
-int	get_infile2(char **args, int *i)
+static void	initialize_variables(int *in, char **str, char **aux)
 {
-	int		in;
-	int		index;
-	char	*aux[2];
-	char	*str[2];
-	char	*tmp;
-	int		begin;
-	int		end;
-	int		counter;
-
-	in = -2;
+	*in = -2;
 	str[0] = NULL;
 	str[1] = NULL;
 	aux[0] = NULL;
-	tmp = NULL;
-	begin = 0;
-	end = 0;
-	aux[1] = "minishell: warning: here-document delimited by end-of-file";
-	(*i)++;
-	if (args[++(*i)])
+}
+
+static void	process_aux(char **args, int *i, char **aux)
+{
+	int	counter;
+
+	counter = 0;
+	aux[0] = args[*i];
+	if (aux[0][counter] == '\'' || aux[0][counter] == '"')
+		add_quotes(&(shell->quotes), 1);
+	else
+		add_quotes(&(shell->quotes), 0);
+}
+
+// static void	help_process_quotes(char ***aux, int *begin, int *end)
+// {
+// 	if (&aux[0][*begin] == '"')
+// 	{
+// 		while (&aux[0][*begin] == '\"')
+// 			(*begin)++;
+// 		if (*begin == 1)
+// 			*end = ft_strlen(&aux[0]) - *begin;
+// 		else
+// 			*end = ft_strlen(&aux[0]) - (*begin * 2) + 1;
+// 	}
+// 	if (&aux[0][*begin] == '\'')
+// 	{
+// 		while (&aux[0][*begin] == '\'')
+// 			(*begin)++;
+// 		if (*begin == 1)
+// 			*end = ft_strlen(&aux[0]) - *begin;
+// 		else
+// 			*end = ft_strlen(&aux[0]) - (*begin * 2) + 1;
+// 	}
+// }
+
+// static void	process_quotes(int *begin, int *end, char **aux)
+// {
+// 	int	counter;
+
+// 	counter = 0;
+// 	if ((aux[0][counter] == '\'' && aux[0][counter + 1] != '"')
+// 		|| (aux[0][counter] == '"' && aux[0][counter + 1] != '\''))
+// 	{
+// 		while (aux[0][counter] == '\'' || aux[0][counter] == '"')
+// 		{
+// 			// if (aux[0][*begin] == '"')
+// 			// {
+// 			// 	while (aux[0][*begin] == '\"')
+// 			// 		(*begin)++;
+// 			// 	if (*begin == 1)
+// 			// 		*end = ft_strlen(aux[0]) - *begin;
+// 			// 	else
+// 			// 		*end = ft_strlen(aux[0]) - (*begin * 2) + 1;
+// 			// }
+// 			// if (aux[0][*begin] == '\'')
+// 			// {
+// 			// 	while (aux[0][*begin] == '\'')
+// 			// 		(*begin)++;
+// 			// 	if (*begin == 1)
+// 			// 		*end = ft_strlen(aux[0]) - *begin;
+// 			// 	else
+// 			// 		*end = ft_strlen(aux[0]) - (*begin * 2) + 1;
+// 			// }
+// 			help_process_quotes(&aux, begin, end);
+// 			counter++;
+// 		}
+// 	}
+// 	else
+// 	{
+// 		if (aux[0][*begin] == '\'' || aux[0][*begin] == '"')
+// 		{
+// 			(*begin)++;
+// 			*end = ft_strlen(aux[0]) - *begin;
+// 		}
+// 	}
+// }
+
+static void help_process_quotes(char ***aux, int *begin, int *end)
+{
+	if ((*aux)[0][*begin] == '\"')
 	{
-		aux[0] = args[*i];
-		index = 0;
-		counter = 0;
-		if (aux[0][counter] == '\'' || aux[0][counter] == '"')
-			add_quotes(&(shell->quotes), 1);
+		while ((*aux)[0][*begin] == '\"')
+			(*begin)++;
+		if (*begin == 1)
+			*end = ft_strlen((*aux)[0]) - *begin;
 		else
-			add_quotes(&(shell->quotes), 0);
-		if ((aux[0][counter] == '\'' && aux[0][counter + 1] != '"')
-			|| (aux[0][counter] == '"' && aux[0][counter + 1] != '\''))
-		{
-			while (aux[0][counter] == '\'' || aux[0][counter] == '"')
-			{
-				if (aux[0][begin] == '"')
-				{
-					while (aux[0][begin] == '\"')
-						begin++;
-					if (begin == 1)
-						end = ft_strlen(aux[0]) - begin;
-					else
-						end = ft_strlen(aux[0]) - (begin * 2) + 1;
-				}
-				if (aux[0][begin] == '\'')
-				{
-					while (aux[0][begin] == '\'')
-						begin++;
-					if (begin == 1)
-						end = ft_strlen(aux[0]) - begin;
-					else
-						end = ft_strlen(aux[0]) - (begin * 2) + 1;
-				}
-				counter++;
-			}
-		}
+			*end = ft_strlen((*aux)[0]) - (*begin * 2) + 1;
+	}
+	if ((*aux)[0][*begin] == '\'')
+	{
+		while ((*aux)[0][*begin] == '\'')
+			(*begin)++;
+		if (*begin == 1)
+			*end = ft_strlen((*aux)[0]) - *begin;
 		else
+			*end = ft_strlen((*aux)[0]) - (*begin * 2) + 1;
+	}
+}
+
+static void process_quotes(int *begin, int *end, char **aux)
+{
+	int counter;
+
+	counter = 0;
+	if ((aux[0][counter] == '\'' && aux[0][counter + 1] != '\"') ||
+		(aux[0][counter] == '\"' && aux[0][counter + 1] != '\''))
+	{
+		while (aux[0][counter] == '\'' || aux[0][counter] == '\"')
 		{
-			if (aux[0][begin] == '\'' || aux[0][begin] == '"')
-			{
-				begin++;
-				end = ft_strlen(aux[0]) - begin;
-			}
+			help_process_quotes(&aux, begin, end);
+			counter++;
 		}
 	}
-	tmp = ft_substr(aux[0], begin, end - 1);
-	aux[0] = ft_strdup(tmp);
-	free(tmp);
-	in = get_here_doc(str, aux);
-	free(aux[0]);
-	if (!args[*i] || in == -1)
+	else
+	{
+		if (aux[0][*begin] == '\'' || aux[0][*begin] == '\"')
+		{
+			(*begin)++;
+			*end = ft_strlen(aux[0]) - *begin;
+		}
+	}
+}
+
+// static void	process_quotes_inner(int *begin, int *end, char **aux)
+// {
+// 	if (aux[0][*begin] == '"')
+// 	{
+// 		while (aux[0][*begin] == '\"')
+// 			(*begin)++;
+// 		if (*begin == 1)
+// 			*end = ft_strlen(aux[0]) - *begin;
+// 		else
+// 			*end = ft_strlen(aux[0]) - (*begin * 2) + 1;
+// 	}
+// 	if (aux[0][*begin] == '\'')
+// 	{
+// 		while (aux[0][*begin] == '\'')
+// 			(*begin)++;
+// 		if (*begin == 1)
+// 			*end = ft_strlen(aux[0]) - *begin;
+// 		else
+// 			*end = ft_strlen(aux[0]) - (*begin * 2) + 1;
+// 	}
+// }
+
+// static void	process_quotes(int *begin, int *end, char **aux)
+// {
+// 	int	counter;
+
+// 	counter = 0;
+// 	if ((aux[0][counter] == '\'' && aux[0][counter + 1] != '"')
+// 		|| (aux[0][counter] == '"' && aux[0][counter + 1] != '\''))
+// 	{
+// 		while (aux[0][counter] == '\'' || aux[0][counter] == '"')
+// 		{
+// 			process_quotes_inner(begin, end, aux);
+// 			counter++;
+// 		}
+// 	}
+// 	else
+// 	{
+// 		if (aux[0][*begin] == '\'' || aux[0][*begin] == '"')
+// 		{
+// 			(*begin)++;
+// 			*end = ft_strlen(aux[0]) - *begin;
+// 		}
+// 	}
+// }
+
+static void	validate_input(char **args, int *i, int *in)
+{
+	char	*error;
+
+	error = "minishell: syntax error near unexpected token `newline'";
+	if (!args[*i] || *in == -1)
 	{
 		*i = -1;
-		if (in != -1)
+		if (*in != -1)
 		{
-			ft_putendl_fd("minishell: syntax\
-					error near unexpected token `newline'", 2);
+			ft_putendl_fd(error, 2);
 			shell->g_status = 258;
 		}
 	}
+}
+
+int	get_infile2(char **args, int *i)
+{
+	int		in;
+	char	*aux[2];
+	char	*str[2];
+	int		begin;
+	int		end;
+
+	end = 0;
+	begin = 0;
+	initialize_variables(&in, str, aux);
+	(*i)++;
+	if (args[++(*i)])
+	{
+		process_aux(args, i, aux);
+		process_quotes(&begin, &end, aux);
+	}
+	aux[0] = ft_substr(aux[0], begin, end - 1);
+	in = get_here_doc(str, aux);
+	free(aux[0]);
+	validate_input(args, i, &in);
 	return (in);
 }

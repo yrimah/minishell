@@ -6,24 +6,64 @@
 /*   By: aelidrys <aelidrys@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/08 10:13:46 by aelidrys          #+#    #+#             */
-/*   Updated: 2023/05/25 19:05:19 by yrimah           ###   ########.fr       */
+/*   Updated: 2023/05/26 16:07:54 by yrimah           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-static t_cmd	*check_redirec(t_cmd *node, char **a[2], int *i)
+static t_cmd	*handle_redirection(t_cmd *node, char **a[2], int *i)
+{
+	if (str_comp(&a[0][*i + 2][0], ">"))
+	{
+		error_handling(12, NULL);
+		shell->g_status = 258;
+		node->out = -1;
+		return (node);
+	}
+	else if (str_comp(&a[0][*i + 2][0], "<"))
+	{
+		error_handling(11, NULL);
+		shell->g_status = 258;
+		node->out = -1;
+		return (node);
+	}
+	else
+		node = get_outf2(node, a[1], i);
+	return (node);
+}
+
+void	help_redirec(t_cmd *node, int *i)
+{
+	t_herdoc	*tmp;
+
+	tmp = shell->hdc;
+	node->in = shell->hdc->in;
+	shell->hdc = shell->hdc->next;
+	free(tmp);
+	*i += 2;
+}
+
+t_list	*stop_fill(t_list *cmds, char **args, char **temp)
+{
+	ft_lstclear(&cmds, free_nodes_content);
+	ft_free_envp(&temp);
+	ft_free_envp(&args);
+	return (NULL);
+}
+
+static t_cmd	*check_redirect(t_cmd *node, char **a[2], int *i)
 {
 	if (a[0][*i])
 	{
-		if (check_double_append(a, i, node))
-			return (node);
-		else if (check_single_append(a, i, node))
-			return (node);
-		else if (check_double_input(a, i, node))
-			return (node);
-		else if (check_single_input(a, i, node))
-			return (node);
+		if (a[0][*i][0] == '>' && a[0][*i + 1] && a[0][*i + 1][0] == '>')
+			node = handle_redirection(node, a, i);
+		else if (a[0][*i][0] == '>')
+			node = get_outf1(node, a[1], i);
+		else if (a[0][*i][0] == '<' && a[0][*i + 1] && a[0][*i + 1][0] == '<')
+			help_redirec(node, i);
+		else if (a[0][*i][0] == '<')
+			node = get_inf1(node, a[1], i);
 		else if (a[0][*i][0] != '|')
 			node->cmmd = ft_ext_mat(node->cmmd, a[1][*i]);
 		else
@@ -50,13 +90,14 @@ t_list	*fill_nodes(char **args, int i)
 	{
 		help_fill2(cmds, &i, args, &temp[0]);
 		j = i;
-		cmds[1]->content = check_redirec(cmds[1]->content, temp, &i);
+		cmds[1]->content = check_redirect(cmds[1]->content, temp, &i);
 		if (i < 0)
 		{
 			((t_cmd *)cmds[1]->content)->s = -1;
 			i = j;
 			while (args[i] && args[i + 1] && !str_comp(args[i + 1], "|"))
 				i++;
+			return (stop_fill(cmds[0], args, temp[1]));
 		}
 		if (!args[i])
 			break ;

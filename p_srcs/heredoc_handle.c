@@ -41,59 +41,6 @@ char	*get_here_str(char *str[2], size_t len, char *limit, char *warn)
 	return (str[1]);
 }
 
-// int	open_here_doc(char **args, int a)
-// {
-// 	t_herdoc	*hdc;
-
-// 	while (args[++a])
-// 	{
-// 		if (args[a + 1])
-// 		{
-// 			if ((args[a + 3] && args[a + 2] && str_comp(args[a + 2], "<")
-// 					&& str_comp(args[a + 3], "<")) && !args[a + 4])
-// 			{
-// 				error_handling(13, NULL);
-// 				shell->g_status = 258;
-// 				return (0);
-// 			}
-// 			else if ((args[a + 3] && args[a + 2] && str_comp(args[a + 2], ">")
-// 					&& str_comp(args[a + 3], ">")) && !args[a + 4])
-// 			{
-// 				error_handling(14, NULL);
-// 				shell->g_status = 258;
-// 				return (0);
-// 			}
-// 		}
-// 		if (str_comp(args[a], "<") && str_comp(args[a + 1], "<"))
-// 		{
-// 			if (((str_comp(args[a + 2], "|") || (str_comp(args[a + 2], "<"))
-// 						|| (str_comp(args[a + 2], ">"))) && !args[a + 3]))
-// 			{
-// 				if (str_comp(args[a + 2], "|"))
-// 					error_handling(10, NULL);
-// 				else if (str_comp(args[a + 2], "<"))
-// 					error_handling(11, NULL);
-// 				else
-// 					error_handling(12, NULL);
-// 				shell->g_status = 258;
-// 				return (0);
-// 			}
-// 			add_herdoc(&(shell->hdc), get_infile2(args, &a));
-// 			if (shell->g_status == 1 || shell->g_status == 258)
-// 			{
-// 				while (shell->hdc)
-// 				{
-// 					hdc = shell->hdc;
-// 					shell->hdc = shell->hdc->next;
-// 					free(hdc);
-// 				}
-// 				return (0);
-// 			}
-// 		}
-// 	}
-// 	return (1);
-// }
-
 int	help_fd(int *fd)
 {
 	if (pipe(fd) == -1)

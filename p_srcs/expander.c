@@ -34,7 +34,8 @@ char	*mini_getenv(char *var, char **envp, int n)
 
 static char	*y_get_env(char *var, t_env *env, int n, int *index)
 {
-	int	n2;
+	char	*tmp;
+	int		n2;
 
 	if (n < 0)
 		n = ft_strlen(var);
@@ -43,8 +44,14 @@ static char	*y_get_env(char *var, t_env *env, int n, int *index)
 		n2 = n;
 		if (n2 < ft_strchars_i(env->key, "\"\'$|>< "))
 			n2 = ft_strchars_i(env->key, "\"\'$|>< ");
-		if (!ft_strncmp(env->key, var, n2) && !env->key[n2 + 1])
+		tmp = ft_substr(var, 0, n2);
+		if (!ft_strncmp(env->key, var, n2) && str_comp(env->key, tmp))
+		{
+			free(tmp);
 			return (ft_substr(env->val, 0, ft_strlen(env->val)));
+		}
+		if (tmp)
+			free(tmp);
 		*index = n2;
 		env = env->next;
 	}
@@ -68,16 +75,19 @@ static char	*get_substr_var(char *str, int i, t_shell *prompt)
 	aux = ft_substr(str, 0, i - 1);
 	index = 0;
 	var = y_get_env(&str[i], shell->env, \
-		ft_strchars_i(&str[i], "\"\'-+*.,:=~@#!<>$^&|%/ "), &index);
-	mytmp1 = ft_substr(&str[i], index, ft_strlen(&str[i]) - 1);
-	mytmp2 = a_strjoin(var, mytmp1, 0, 0);
-	free(mytmp1);
-	free(var);
-	var = mytmp2;
+		ft_strchars_i(&str[i], "\"\'-+*.,:=~@#!<>$^&|{}][%/ "), &index);
 	if (!var && str[i] == '$')
 		var = ft_itoa(prompt->id);
 	else if (!var && str[i] == '?')
 		var = ft_itoa(shell->g_status);
+	else
+	{
+		mytmp1 = ft_substr(&str[i], index, ft_strlen(&str[i]) - 1);
+		mytmp2 = a_strjoin(var, mytmp1, 0, 0);
+		free(mytmp1);
+		free(var);
+		var = mytmp2;
+	}
 	path = a_strjoin(aux, var, 0, 0);
 	free(aux);
 	aux = ft_strdup(path);

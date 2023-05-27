@@ -14,14 +14,14 @@
 
 int	check_double_redirect(char **args, int a)
 {
-	if ((args[a + 3] && args[a + 2] && str_comp(args[a + 2], "<")
+	if ((args[a + 2] && args[a + 3] && str_comp(args[a + 2], "<")
 			&& str_comp(args[a + 3], "<")) && !args[a + 4])
 	{
 		error_handling(13, NULL);
 		shell->g_status = 258;
 		return (1);
 	}
-	else if ((args[a + 3] && args[a + 2] && str_comp(args[a + 2], ">")
+	else if ((args[a + 2] && args[a + 3] && str_comp(args[a + 2], ">")
 			&& str_comp(args[a + 3], ">")) && !args[a + 4])
 	{
 		error_handling(14, NULL);
@@ -39,7 +39,7 @@ int	is_input_redirect(char **args, int a)
 int	check_invalid_redirect(char **args, int a)
 {
 	if (((str_comp(args[a + 2], "|") || str_comp(args[a + 2], "<")
-				|| str_comp(args[a + 2], ">")) && !args[a + 3]))
+				|| str_comp(args[a + 2], ">"))))
 	{
 		if (str_comp(args[a + 2], "|"))
 			error_handling(10, NULL);

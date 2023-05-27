@@ -9,10 +9,10 @@ P_OBJ = p_srcs/main.o p_srcs/split_space_quoted.o p_srcs/expander.o\
 p_srcs/handling.o p_srcs/ft_dup_envp.o p_srcs/fill_nodes.o p_srcs/ft_last_split.o\
 p_srcs/help.o p_srcs/ft_split_command.o p_srcs/get_infile_outfile.o\
 p_srcs/heredoc_handle.o p_srcs/parsing.o p_srcs/set_vars.o p_srcs/heredoc_gest.o\
-p_srcs/check_to_get_params.o p_srcs/help_to_fill.o
+p_srcs/help_to_fill.o #p_srcs/check_to_get_params.o
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror  #-fsanitize=address
+CFLAGS = -Wall -Wextra -Werror #-fsanitize=address
 RD_FLAGS = -I ~/Users/yrimah/goinfre/homebrew/Cellar/readline/8.2.1/include  -L /Users/yrimah/goinfre/homebrew/Cellar/readline/8.2.1/lib -lreadline
 
 
