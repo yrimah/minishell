@@ -54,7 +54,7 @@ t_cmd	*get_out_redirect(t_cmd *node, char **args, int *i)
 		if (node->out != -1)
 		{
 			ft_putendl_fd(nl, 2);
-			g_shell->g_status = 2;
+			g_shell->g_status = 258;
 		}
 		else
 			g_shell->g_status = 1;
@@ -82,7 +82,7 @@ t_cmd	*get_double_out_redirect(t_cmd *node, char **args, int *i)
 			g_shell->g_status = 258;
 		}
 		else
-			g_shell->g_status = 258;
+			g_shell->g_status = 1;
 	}
 	return (node);
 }
@@ -92,23 +92,27 @@ t_cmd	*get_in_redirect(t_cmd *node, char **args, int *i)
 	int		flags[2];
 	char	*error;
 
-	flags[0] = 0;
-	flags[1] = 0;
-	error = "minishell: syntax error near unexpected token `newline'";
+	error = NULL;
+	get_in_help2(flags, error);
+	if ((str_comp(args[*i + 1], ">") && !args[*i + 2]))
+	{
+		node->in = -1;
+		return (node);
+	}
+	else if (str_comp(args[*i + 1], ">") && str_comp(args[*i + 2], ">"))
+	{
+		*i = -1;
+		error_handling(12, NULL);
+		g_shell->g_status = 258;
+		return (node);
+	}
+	else if (str_comp(args[*i + 1], ">") && args[*i + 2])
+		get_in_help1(i, flags);
 	(*i)++;
 	if (args[*i])
 		node->in = return_fd(node->in, args[*i], flags);
 	if (!args[*i] || node->in == -1)
-	{
-		*i = -1;
-		if (node->in != -1)
-		{
-			ft_putendl_fd(error, 2);
-			g_shell->g_status = 258;
-		}
-		else
-			g_shell->g_status = 258;
-	}
+		get_in_help3(i, node, error);
 	return (node);
 }
 

@@ -14,6 +14,12 @@
 
 int	check_double_redirect(char **args, int a)
 {
+	if (str_comp(args[a], ">") && str_comp(args[a + 1], "<"))
+	{
+		error_handling(11, NULL);
+		g_shell->g_status = 258;
+		return (1);
+	}
 	if ((args[a + 2] && args[a + 3] && str_comp(args[a + 2], "<")
 			&& str_comp(args[a + 3], "<")) && !args[a + 4])
 	{

@@ -134,6 +134,9 @@ char	*ft_last_split(char const *s1, int squote, int dquote);
 //get in-out file
 t_cmd	*get_out_redirect(t_cmd *node, char **args, int *i);
 t_cmd	*get_double_out_redirect(t_cmd *node, char **args, int *i);
+void	get_in_help1(int *i, int flags[2]);
+void	get_in_help2(int flags[2], char *error);
+void	get_in_help3(int *i, t_cmd *node, char *error);
 t_cmd	*get_in_redirect(t_cmd *node, char **args, int *i);
 int		get_double_in_redirect(char **args, int *i);
 
