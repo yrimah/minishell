@@ -19,6 +19,7 @@ static t_cmd	*handle_redirection(t_cmd *node, char **a[2], int *i)
 		error_handling(12, NULL);
 		g_shell->g_status = 258;
 		node->out = -1;
+		*i = -3;
 		return (node);
 	}
 	else if (str_comp(&a[0][*i + 2][0], "<"))
@@ -26,6 +27,7 @@ static t_cmd	*handle_redirection(t_cmd *node, char **a[2], int *i)
 		error_handling(11, NULL);
 		g_shell->g_status = 258;
 		node->out = -1;
+		*i = -3;
 		return (node);
 	}
 	else
@@ -69,12 +71,12 @@ static t_cmd	*check_redirect(t_cmd *node, char **a[2], int *i)
 		else
 		{
 			error_handling(10, NULL);
-			*i = -2;
+			*i = -3;
 		}
 		return (node);
 	}
 	error_handling(10, NULL);
-	*i = -2;
+	*i = -3;
 	return (node);
 }
 
@@ -91,7 +93,7 @@ t_list	*fill_nodes(char **args, int i)
 		help_fill2(cmds, &i, args, &temp[0]);
 		j = i;
 		cmds[1]->content = check_redirect(cmds[1]->content, temp, &i);
-		if (!cmds[1]->content)
+		if (i == -3)
 			return (stop_fill(cmds[0], args, temp[1]));
 		if (i < 0)
 		{

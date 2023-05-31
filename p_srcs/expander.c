@@ -25,6 +25,7 @@ static char	*y_get_env(char *var, t_env *env, int n, int *index)
 		if (n2 < ft_strchars_i(env->key, "\"\'$|>< "))
 			n2 = ft_strchars_i(env->key, "\"\'$|>< ");
 		tmp = ft_substr(var, 0, n2);
+		*index = n2;
 		if (!ft_strncmp(env->key, var, n2) && str_comp(env->key, tmp))
 		{
 			free(tmp);
@@ -32,7 +33,6 @@ static char	*y_get_env(char *var, t_env *env, int n, int *index)
 		}
 		if (tmp)
 			free(tmp);
-		*index = n2;
 		env = env->next;
 	}
 	return (NULL);
@@ -53,7 +53,7 @@ static char	*get_substr_var(char *str, int i)
 	aux = ft_substr(str, 0, i - 1);
 	index = 0;
 	var = y_get_env(&str[i], g_shell->env, \
-		ft_strchars_i(&str[i], "\"\'-+*.,:=~@#!<>$?^&|{}][%/ "), &index);
+		ft_strchars_i(&str[i], "\"\'-+*.,:;=~@#!<>$?^&|{}][%/ "), &index);
 	if (!var && str[i] == '$')
 		var = ft_itoa(g_shell->id);
 	else if (!var && str[i] == '?')
@@ -90,6 +90,14 @@ char	*expand_vars(char *str, int i, int quotes[2], int q)
 	return (str);
 }
 
+static void	expand_help(char *path, char *aux, char **str)
+{
+	free(*str);
+	*str = ft_strjoin(path, aux);
+	free(aux);
+	free(path);
+}
+
 char	*expand_path(char *str, int i, int quotes[2], char *var)
 {
 	char	*path;
@@ -102,16 +110,16 @@ char	*expand_path(char *str, int i, int quotes[2], char *var)
 		quotes[0] = (quotes[0] + (!quotes[1] && str[i] == '\'')) % 2;
 		quotes[1] = (quotes[1] + (!quotes[0] && str[i] == '\"')) % 2;
 		if (!quotes[0] && !quotes[1] && str[i] == '~'
-			&& (i == 0 || str[i - 1] == ' ' || str[i - 1] == '$'))
+			&& (i == 0 || str[i - 1] == ' ' || str[i - 1] == '$')
+			&& (!str[i + 1] || (str[i + 1]
+					&& (str[i + 1] == '/'
+						|| str[i + 1] == ':' || str[i + 1] == ';'))))
 		{
 			aux = ft_substr(str, 0, i);
 			path = ft_strjoin(aux, var);
 			free(aux);
 			aux = ft_substr(str, i + 1, ft_strlen(str));
-			free(str);
-			str = ft_strjoin(path, aux);
-			free(aux);
-			free(path);
+			expand_help(path, aux, &str);
 			return (expand_path(str, i + ft_strlen(var) - 1, quotes, var));
 		}
 	}

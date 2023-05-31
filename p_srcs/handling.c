@@ -6,11 +6,17 @@
 /*   By: aelidrys <aelidrys@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/08 10:16:10 by aelidrys          #+#    #+#             */
-/*   Updated: 2023/05/17 10:15:54 by aelidrys         ###   ########.fr       */
+/*   Updated: 2023/05/31 19:21:09 by yrimah           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+void	error_help(int error)
+{
+	error_handling(error, NULL);
+	g_shell->g_status = 258;
+}
 
 void	*error_handling(int error, char *param)
 {
@@ -35,6 +41,21 @@ void	*error_handling(int error, char *param)
 	if (error != 2 && error != 3)
 		ft_putstr_fd(param, 2);
 	return (NULL);
+}
+
+t_cmd	*get_in_error(t_cmd *node, int *i, int n_error, int flag)
+{
+	if (!flag)
+		error_handling(n_error, NULL);
+	*i = -3;
+	g_shell->g_status = 258;
+	if (flag)
+	{
+		ft_putendl_fd("minishell: syntax error near\
+		unexpected token `newline'", 2);
+		node->in = -1;
+	}
+	return (node);
 }
 
 void	free_nodes_content(void *content)

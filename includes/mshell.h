@@ -97,7 +97,9 @@ char	**ft_dup_envp(char **envp);
 char	**ft_split_space_quoted(char const *str, char *delim);
 
 //error
+void	error_help(int error);
 void	*error_handling(int error, char *param);
+t_cmd	*get_in_error(t_cmd *node, int *i, int n_error, int flag);
 
 //free nodes content if error
 void	free_nodes_content(void *content);
@@ -135,8 +137,12 @@ char	*ft_last_split(char const *s1, int squote, int dquote);
 t_cmd	*get_out_redirect(t_cmd *node, char **args, int *i);
 t_cmd	*get_double_out_redirect(t_cmd *node, char **args, int *i);
 void	get_in_help1(int *i, int flags[2]);
-void	get_in_help2(int flags[2], char *error);
-void	get_in_help3(int *i, t_cmd *node, char *error);
+void	get_in_help2(int flags[2], char **error);
+void	get_in_help3(int *i, t_cmd *node, char **error);
+void	get_out_help1(int *i, t_cmd *node, char **nl);
+void	get_out_help2(int *i, char **nl);
+void	get_out_help3(int *i);
+void	get_out_help4(int *i);
 t_cmd	*get_in_redirect(t_cmd *node, char **args, int *i);
 int		get_double_in_redirect(char **args, int *i);
 

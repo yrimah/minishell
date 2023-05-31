@@ -6,7 +6,7 @@
 /*   By: aelidrys <aelidrys@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/08 10:16:01 by aelidrys          #+#    #+#             */
-/*   Updated: 2023/05/27 18:27:51 by aelidrys         ###   ########.fr       */
+/*   Updated: 2023/05/31 19:24:06 by yrimah           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,27 +45,30 @@ t_cmd	*get_out_redirect(t_cmd *node, char **args, int *i)
 	flags[0] = 1;
 	flags[1] = 0;
 	nl = "minishell: syntax error near unexpected token `newline'";
+	if (str_comp(args[*i + 1], "<"))
+	{
+		get_out_help3(i);
+		return (node);
+	}
+	if (str_comp(args[*i + 1], "|") && !args[*i + 2])
+	{
+		get_out_help2(i, &nl);
+		return (node);
+	}
+	else if (str_comp(args[*i + 1], "|") && args[*i + 2])
+		get_out_help4(i);
 	(*i)++;
 	if (args[*i])
 		node->out = return_fd(node->out, args[*i], flags);
 	if (!args[*i] || node->out == -1)
-	{
-		*i = -1;
-		if (node->out != -1)
-		{
-			ft_putendl_fd(nl, 2);
-			g_shell->g_status = 258;
-		}
-		else
-			g_shell->g_status = 1;
-	}
+		get_out_help1(i, node, &nl);
 	return (node);
 }
 
 t_cmd	*get_double_out_redirect(t_cmd *node, char **args, int *i)
 {
-	int		flags[2];
 	char	*error;
+	int		flags[2];
 
 	flags[0] = 1;
 	flags[1] = 1;
@@ -89,30 +92,28 @@ t_cmd	*get_double_out_redirect(t_cmd *node, char **args, int *i)
 
 t_cmd	*get_in_redirect(t_cmd *node, char **args, int *i)
 {
-	int		flags[2];
 	char	*error;
+	int		flags[2];
 
 	error = NULL;
-	get_in_help2(flags, error);
-	if ((str_comp(args[*i + 1], ">") && !args[*i + 2]))
-	{
-		node->in = -1;
-		return (node);
-	}
+	get_in_help2(flags, &error);
+	if (str_comp(args[*i + 1], ">") && !args[*i + 2])
+		return (get_in_error(node, i, 42, 1));
 	else if (str_comp(args[*i + 1], ">") && str_comp(args[*i + 2], ">"))
-	{
-		*i = -1;
-		error_handling(12, NULL);
-		g_shell->g_status = 258;
-		return (node);
-	}
-	else if (str_comp(args[*i + 1], ">") && args[*i + 2])
+		return (get_in_error(node, i, 12, 0));
+	else if (str_comp(args[*i + 1], ">")
+		&& args[*i + 2] && !str_comp(args[*i + 2], "|"))
 		get_in_help1(i, flags);
+	else if (str_comp(args[*i + 1], ">")
+		&& args[*i + 2] && str_comp(args[*i + 2], "|"))
+		return (get_in_error(node, i, 10, 0));
+	else if (str_comp(args[*i + 1], "|"))
+		return (get_in_error(node, i, 10, 0));
 	(*i)++;
 	if (args[*i])
 		node->in = return_fd(node->in, args[*i], flags);
 	if (!args[*i] || node->in == -1)
-		get_in_help3(i, node, error);
+		get_in_help3(i, node, &error);
 	return (node);
 }
 

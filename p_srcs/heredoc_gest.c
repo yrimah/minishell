@@ -14,24 +14,27 @@
 
 int	check_double_redirect(char **args, int a)
 {
-	if (str_comp(args[a], ">") && str_comp(args[a + 1], "<"))
+	if (str_comp(args[a], ">") && str_comp(args[a + 1], ">")
+		&& str_comp(args[a + 2], ">"))
 	{
-		error_handling(11, NULL);
-		g_shell->g_status = 258;
+		error_help(12);
 		return (1);
 	}
-	if ((args[a + 2] && args[a + 3] && str_comp(args[a + 2], "<")
+	else if (str_comp(args[a], ">") && str_comp(args[a + 1], "<"))
+	{
+		error_help(11);
+		return (1);
+	}
+	else if ((args[a + 2] && args[a + 3] && str_comp(args[a + 2], "<")
 			&& str_comp(args[a + 3], "<")) && !args[a + 4])
 	{
-		error_handling(13, NULL);
-		g_shell->g_status = 258;
+		error_help(13);
 		return (1);
 	}
 	else if ((args[a + 2] && args[a + 3] && str_comp(args[a + 2], ">")
 			&& str_comp(args[a + 3], ">")) && !args[a + 4])
 	{
-		error_handling(14, NULL);
-		g_shell->g_status = 258;
+		error_help(14);
 		return (1);
 	}
 	return (0);

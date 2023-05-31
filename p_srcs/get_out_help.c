@@ -1,39 +1,44 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_in_help.c                                      :+:      :+:    :+:   */
+/*   get_out_help.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yrimah <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/28 17:34:44 by yrimah            #+#    #+#             */
-/*   Updated: 2023/05/31 16:43:54 by yrimah           ###   ########.fr       */
+/*   Created: 2023/05/31 16:43:26 by yrimah            #+#    #+#             */
+/*   Updated: 2023/05/31 16:43:32 by yrimah           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 #include "../minishell.h"
 
-void	get_in_help1(int *i, int flags[2])
-{
-	flags[0] = 1;
-	flags[1] = 1;
-	(*i)++;
-}
-
-void	get_in_help2(int flags[2], char **error)
-{
-	flags[0] = 0;
-	flags[1] = 0;
-	*error = "minishell: syntax error near unexpected token `newline'";
-}
-
-void	get_in_help3(int *i, t_cmd *node, char **error)
+void	get_out_help1(int *i, t_cmd *node, char **nl)
 {
 	*i = -3;
-	if (node->in != -1)
+	if (node->out != -1)
 	{
-		ft_putendl_fd(*error, 2);
+		ft_putendl_fd(*nl, 2);
 		g_shell->g_status = 258;
 	}
 	else
 		g_shell->g_status = 1;
+}
+
+void	get_out_help2(int *i, char **nl)
+{
+	ft_putendl_fd(*nl, 2);
+	*i = -3;
+	g_shell->g_status = 258;
+}
+
+void	get_out_help3(int *i)
+{
+	error_handling(11, NULL);
+	*i = -3;
+	g_shell->g_status = 258;
+}
+
+void	get_out_help4(int *i)
+{
+	g_shell->g_status = 0;
+	(*i)++;
 }

@@ -10,7 +10,7 @@ p_srcs/handling.o p_srcs/ft_dup_envp.o p_srcs/fill_nodes.o p_srcs/ft_last_split.
 p_srcs/help.o p_srcs/ft_split_command.o p_srcs/get_infile_outfile.o\
 p_srcs/heredoc_handle.o p_srcs/parsing.o p_srcs/set_vars.o p_srcs/heredoc_gest.o\
 p_srcs/help_to_fill.o p_srcs/get_heredoc_help.o p_srcs/ft_add_quotes.o p_srcs/help_expand.o\
-p_srcs/get_in_help.o
+p_srcs/get_in_help.o p_srcs/get_out_help.o
 
 CC = cc
 CFLAGS = -Wall -Wextra -Werror  #-fsanitize=address

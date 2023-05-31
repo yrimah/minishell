@@ -104,7 +104,7 @@ int	open_here_doc(char **args, int a)
 {
 	while (args[++a])
 	{
-		if (args[a + 1])
+		if (args[a + 1] && args[a + 2])
 		{
 			if (check_double_redirect(args, a))
 				return (0);

@@ -6,7 +6,7 @@
 /*   By: aelidrys <aelidrys@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/19 11:14:03 by aelidrys          #+#    #+#             */
-/*   Updated: 2023/05/27 19:15:58 by aelidrys         ###   ########.fr       */
+/*   Updated: 2023/05/29 19:30:04 by aelidrys         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,8 @@ void	minishell(void)
 
 void	a_start(t_shell *shell, char **env1, int x)
 {
+	char	buff[10000];
+
 	x = -1;
 	g_shell->old_in = dup(0);
 	g_shell->old_out = dup(1);
@@ -68,13 +70,17 @@ void	a_start(t_shell *shell, char **env1, int x)
 	g_shell->flag = 0;
 	g_shell->ex_st = 0;
 	g_shell->g_status = 0;
+	if (!env1[0])
+	{
+		add_back(&g_shell->env, new_env(a_strjoin("PWD=", \
+			getcwd(buff, 10000), 0, 0), 1));
+		add_back(&g_shell->env, new_env("SHLVL=1", 0));
+	}
 	while (env1[++x])
-		add_back(&g_shell->env, new_env(env1[x], 1));
+		add_back(&g_shell->env, new_env(env1[x], 0));
 	delete_env(shell, "OLDPWD", 0);
-	add_back(&g_shell->env, new_env("OLDPWD", 1));
+	add_back(&g_shell->env, new_env("OLDPWD", 0));
 	sort_env(g_shell->env);
-	signal(SIGINT, sigint_hand);
-	signal(SIGQUIT, SIG_IGN);
 }
 
 int	main(int ac, char **av, char **env)
@@ -83,6 +89,8 @@ int	main(int ac, char **av, char **env)
 	setup_term();
 	init_shell(g_shell, av, env);
 	a_start(g_shell, env, ac);
+	signal(SIGINT, sigint_hand);
+	signal(SIGQUIT, SIG_IGN);
 	minishell();
 	a_printf("%s\n", "exit", NULL, g_shell->old_out);
 	exit(0);

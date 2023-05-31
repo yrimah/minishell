@@ -6,7 +6,7 @@
 /*   By: aelidrys <aelidrys@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/10 09:13:40 by aelidrys          #+#    #+#             */
-/*   Updated: 2023/05/27 18:27:51 by aelidrys         ###   ########.fr       */
+/*   Updated: 2023/05/29 19:26:35 by aelidrys         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ t_env	*new_env(char *s, int i)
 	t_env	*envx;
 	char	**spl;
 
-	(void)i;
 	envx = malloc(sizeof(t_env));
 	spl = get_key_and_val(NULL, s, NULL, 0);
 	envx->val = NULL;
@@ -28,6 +27,8 @@ t_env	*new_env(char *s, int i)
 	free(spl);
 	envx->index = 0;
 	envx->next = NULL;
+	if (i)
+		free(s);
 	return (envx);
 }
 
@@ -73,7 +74,7 @@ void	add_env(t_shell *shell, char *str)
 		env1->a = 1;
 	}
 	if (!env1)
-		add_back(&g_shell->env, new_env(str, 1));
+		add_back(&g_shell->env, new_env(str, 0));
 	free(spl[0]);
 	free(spl[1]);
 	free(spl);
