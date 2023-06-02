@@ -12,6 +12,8 @@
 
 #include "../minishell.h"
 
+//✅
+
 static char	*y_get_env(char *var, t_env *env, int n, int *index)
 {
 	char	*tmp;

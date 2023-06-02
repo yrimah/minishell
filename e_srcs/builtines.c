@@ -12,6 +12,8 @@
 
 #include "../minishell.h"
 
+//✅
+
 void	a_pwd(t_cmd *cmd)
 {
 	char	dir[10000];

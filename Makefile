@@ -1,3 +1,4 @@
+#✅
 NAME = minishell
 
 E_OBJ = e_srcs/main.o e_srcs/command.o  e_srcs/builtines.o e_srcs/toulse1.o\
